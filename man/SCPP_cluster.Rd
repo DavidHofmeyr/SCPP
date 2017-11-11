@@ -32,15 +32,15 @@ using spectral clustering within an optimal subspace.
 }
 
 \examples{
-## load optidigits dataset
-data(optidigits)
+## load synthetic control chart dataset
+data(chart)
 
 ## obtain clustering solution using SCPP
-sol <- SCPP_cluster(optidigits$x, 10)
+sol <- SCPP_cluster(chart$x, 6)
 
 ## plot cluster model
 SCPP_plot(sol)
 
 ## evaluate performance using external cluster validity metrics
-cluster_performance(sol$cluster, optidigits$c)
+cluster_performance(sol$cluster, chart$c)
 }
