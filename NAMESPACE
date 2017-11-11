@@ -1,1 +1,5 @@
-exportPattern("^[[:alpha:]]+")
+import(rARPACK)
+import(pracma)
+import(FactoClass)
+
+export("SCPP_cluster", "SCPP_plot", "cluster_performance")
