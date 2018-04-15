@@ -88,7 +88,7 @@ SCPP_cluster <- function(X, K, v0 = NULL, ndim = NULL, nMicro = NULL, betamax = 
 
   if(is.null(betamax)){
     if(type=='standard') params$betamax <- 1.5
-    else params$betamax <- 5
+    else params$betamax <- 3
   }
   else if(is.numeric(betamax)) params$betamax <- betamax
   else stop('betamax must be numeric')
@@ -97,7 +97,7 @@ SCPP_cluster <- function(X, K, v0 = NULL, ndim = NULL, nMicro = NULL, betamax = 
   else if(is.numeric(betamin)) params$betamin <- betamin
   else stop('betamin must be numeric')
 
-  params$betaskip <- 0.1
+  params$betaskip <- 0.2
 
   params$kernel <- 'Gaussian'
 
