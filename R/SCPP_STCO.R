@@ -355,7 +355,7 @@ df_spectral <- function(Th, X, P, type){
   if(P$ndim>1){
     for(i in 1:(P$ndim-1)){
       for(j in (i+1):P$ndim){
-        ortho <- v[,i]%*%v[,j]
+        ortho <- (v[,i]%*%v[,j])[1]
         D[,i] <- D[,i] + P$om*2*ortho*v[,j]
         D[,j] <- D[,j] + P$om*2*ortho*v[,i]
       }
@@ -500,7 +500,7 @@ spectral_min_check <- function(Th, X, P, type){
         if(P$ndim>1){
           for(i in 1:(P$ndim-1)){
             for(j in (i+1):P$ndim){
-              ortho <- v[,i]%*%v[,j]
+              ortho <- (v[,i]%*%v[,j])[1]
               D[,i] <- D[,i] + P$om*2*ortho*v[,j]
               D[,j] <- D[,j] + P$om*2*ortho*v[,i]
             }
