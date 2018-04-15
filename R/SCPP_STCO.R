@@ -588,11 +588,11 @@ spectral_assign <- function(Th, X, P, type){
   f <- rARPACK::eigs_sym(L, 2, sigma = 1e-10)$vectors
 
   if(type=='standard'){
-    k <- kmeansw(f, 2, weight = P$x_size)$cluster
+    k <- kmeansw(f, 2, wt = P$x_size)$cluster
   }
   else if(type=='normalised'){
     for(i in 1:n) f[i,] <- f[i,]/norm_vec(f[i,])
-    k <- kmeansw(f, 2, weight = P$x_size)$cluster
+    k <- kmeansw(f, 2, wt = P$x_size)$cluster
   }
   k
 }
@@ -648,7 +648,7 @@ spectral_split <- function(X, v0, P, split.index, type){
   if(n<=2) return(list(Inf, 1:n))
 
   P$COV <- cov(X)
-  if(ncol(X)>3) evals <- rARPACK::eigs_sym(P$COV, min(20, ncol(X)))$values
+  if(ncol(X)>3) evals <- suppressWarnings(rARPACK::eigs_sym(P$COV, min(20, ncol(X)))$values)
   else evals <- eigen(P$COV)$values
   intr <- sum(evals>=1)
 
@@ -781,7 +781,7 @@ QP = function(G){
   c(G%*%solve.QP(t(G)%*%G + 1e-5*diag(n), d, t(A), b, meq = 1)$solution)
 }
 
-kmeansw <- function(X, k, wts){
+kmeansw <- function(X, k, wt){
   mn = colMeans(X)
   ds = pracma::distmat(X, mn)
   C = which.max(ds)
@@ -791,5 +791,5 @@ kmeansw <- function(X, k, wts){
     dsnew = pracma::distmat(X, X[C[i],])
     ds = apply(cbind(ds, dsnew), 1, min)
   }
-  FactoClass::kmeansW(X, unique(X[C,]), weight = wts)  
+  FactoClass::kmeansW(X, unique(X[C,]), weight = wt)
 }
