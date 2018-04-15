@@ -648,7 +648,7 @@ spectral_split <- function(X, v0, P, split.index, type){
   if(n<=2) return(list(Inf, 1:n))
 
   evals <- eigen(cov(X))$values
-  intr <- sum(evals>=1)
+  intr <- min(sum(evals>=mean(evals)), 20)
 
   P$kpar <- list()
 
