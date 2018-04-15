@@ -647,13 +647,15 @@ spectral_split <- function(X, v0, P, split.index, type){
   n <- nrow(rbind(c(),X))
   if(n<=2) return(list(Inf, 1:n))
 
-  evals <- eigen(cov(X))$values
-  intr <- min(sum(evals>=mean(evals)), 20)
+  P$COV <- cov(X)
+  if(ncol(X)>3) evals <- rARPACK::eigs_sym(P$COV, min(20, ncol(X)))$values
+  else evals <- eigen(P$COV)$values
+  intr <- sum(evals>=1)
 
   P$kpar <- list()
 
   if(!is.null(P$s.function)) P$kpar$s <- P$s.function(X)
-  else if(!is.null(P$smult)) P$kpar$s <- sqrt(mean(eigen(cov(X))$values[1:intr]))*P$smult*(4/3/n)^(1/(4+intr))
+  else if(!is.null(P$smult)) P$kpar$s <- sqrt(mean(evals[1:intr]))*P$smult*(4/3/n)^(1/(4+intr))
   else P$kpar$s <- P$s
 
   if(!is.null(P$minprop)) P$nmin <- ceiling(P$minprop*n)
@@ -663,13 +665,15 @@ spectral_split <- function(X, v0, P, split.index, type){
   mns <- colMeans(X)
   if(max(abs(mns))>1e-7) X <- t(t(X)-mns)
 
-  P$COV <- cov(X)
 
   km <- MicroClust(X, P$nMicro, P$nMicro, 1000)
   Xu <- km$centers
   P$x_size <- km$size
 
-  if(is.null(v0)) E <- cbind(c(), c(eigen(cov(X))$vectors[,1:P$ndim]))
+  if(is.null(v0)){
+    if(ncol(X)>3) E <- cbind(c(), c(rARPACK::eigs_sym(P$COV)$vectors[,1:P$ndim]))
+    else E <- cbind(c(), c(eigen(P$COV)$vectors[,1:P$ndim]))
+  }
   else if(is.function(v0)) E <- cbind(c(), v0(X))
   else E <- cbind(c(), v0)
 
