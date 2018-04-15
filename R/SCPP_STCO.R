@@ -671,7 +671,7 @@ spectral_split <- function(X, v0, P, split.index, type){
   P$x_size <- km$size
 
   if(is.null(v0)){
-    if(ncol(X)>3) E <- cbind(c(), c(rARPACK::eigs_sym(P$COV)$vectors[,1:P$ndim]))
+    if(ncol(X)>3) E <- cbind(c(), c(rARPACK::eigs_sym(P$COV, P$ndim)$vectors))
     else E <- cbind(c(), c(eigen(P$COV)$vectors[,1:P$ndim]))
   }
   else if(is.function(v0)) E <- cbind(c(), v0(X))
