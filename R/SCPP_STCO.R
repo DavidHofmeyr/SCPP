@@ -793,3 +793,131 @@ kmeansw <- function(X, k, wt){
   }
   FactoClass::kmeansW(X, unique(X[C,]), weight = wt)
 }
+
+
+SCPP_MMC <- function(X, v0 = NULL, ndim = NULL, nMicro = NULL, betamax = NULL, betamin = NULL, smult = NULL, minsize = NULL, minprop = NULL, omega = NULL, type = NULL){
+
+  P <- list()
+
+  if(is.null(type)) type <- 'normalised'
+  else if(!type%in%c('standard', 'normalised')) stop('type must be either "standard" or "normalised"')
+
+  if(is.null(ndim)) P$ndim <- 2
+  else if(is.numeric(ndim) && ndim%%1==0) P$ndim <- ndim
+  else stop('ndim must be an integer')
+
+  if(is.null(nMicro)) P$nMicro <- nrow(X)
+  else if(is.numeric(nMicro) && nMicro%%1==0) P$nMicro <- nMicro
+  else stop('nMicro must be an integer')
+
+  if(is.null(betamax)){
+    if(type=='standard') P$betamax <- 1.5
+    else P$betamax <- 3
+  }
+  else if(is.numeric(betamax)) P$betamax <- betamax
+  else stop('betamax must be numeric')
+
+  if(is.null(betamin)) P$betamin <- 0.5
+  else if(is.numeric(betamin)) P$betamin <- betamin
+  else stop('betamin must be numeric')
+
+  P$betaskip <- 0.2
+
+  P$kernel <- 'Gaussian'
+
+  if(is.null(smult)) P$smult <- 1
+  else if(is.numeric(smult) && length(smult)==1) P$smult <- smult
+  else stop('smult must be numeric')
+
+  P$del <- 1e-2
+
+  P$eps <- 1e-5
+
+  if(P$ndim>1){
+    if(is.null(omega)) P$om <- 1
+    else if(is.numeric(omega)) P$om <- omega
+    else stop('omega must be numeric. Select a positive value for approximately orthogonal projections
+              and a negative value for correlated ones')
+  }
+
+  if(is.null(minprop)){
+    if(is.null(minsize)) P$nmin <- nrow(X)/3
+    else P$nmin <- minsize
+  }
+  else P$minprop <- minprop
+
+  n <- nrow(rbind(c(),X))
+  if(n<=2) return(list(Inf, 1:n))
+
+  P$COV <- cov(X)
+  if(ncol(X)>3) evals <- suppressWarnings(rARPACK::eigs_sym(P$COV, min(20, ncol(X)))$values)
+  else evals <- eigen(P$COV)$values
+  intr <- sum(evals>=1)
+
+  P$kpar <- list()
+
+  if(!is.null(P$s.function)) P$kpar$s <- P$s.function(X)
+  else if(!is.null(P$smult)) P$kpar$s <- sqrt(mean(evals[1:intr]))*P$smult*(4/3/n)^(1/(4+intr))
+  else P$kpar$s <- P$s
+
+  if(!is.null(P$minprop)) P$nmin <- ceiling(P$minprop*n)
+
+  #### check that data are centralised
+
+  mns <- colMeans(X)
+  if(max(abs(mns))>1e-7) X <- t(t(X)-mns)
+
+
+  km <- MicroClust(X, P$nMicro, P$nMicro, 1000)
+  Xu <- km$centers
+  P$x_size <- km$size
+
+  if(is.null(v0)){
+    if(ncol(X)>3) E <- cbind(c(), c(rARPACK::eigs_sym(P$COV, P$ndim)$vectors))
+    else E <- cbind(c(), c(eigen(P$COV)$vectors[,1:P$ndim]))
+  }
+  else if(is.function(v0)) E <- cbind(c(), v0(X))
+  else E <- cbind(c(), v0)
+
+  s0 <- P$kpar$s
+
+  for(i in 1:ncol(E)){
+
+    P$beta <- P$betamax
+
+    #### compute projection and clustering until the desired balance is met
+    v_init <- matrix(E[,i], ncol = P$ndim)
+    theta <- matrix(0, ncol(X)-1, P$ndim)
+    for(j in 1:P$ndim) theta[,j] <- MakeTheta(v_init[,j])
+
+    
+    theta <- c(theta)
+    theta0 <- theta
+
+    repeat{
+      theta_old <- c(theta)
+
+      #### compute optimal projection
+      theta <- c(pp_spectral(theta, Xu, P, type))
+
+      vv <- MakeV(theta, P$ndim)
+      for(j in 1:P$ndim) vv[,j] <- vv[,j]/norm_vec(vv[,j])
+      if(P$ndim==1) vv <- cbind(vv, eigen(cov(X-X%*%vv%*%t(vv)))$vectors[,1])
+      assgn <- spectral_assign(theta, Xu, P, type)
+      clusters <- numeric(sum(P$x_size))
+      for(j in 1:length(P$x_size)) clusters[which(km$cluster==j)] <- assgn[j]
+
+      plot(X%*%vv, col = clusters)
+
+      #### if balance of clusters is not met decrease beta and try again
+      if((min(sum(clusters==1), sum(clusters==2))<P$nmin) && (P$beta>P$betamin)){
+        P$beta <- max(P$beta - P$betaskip, P$betamin)
+        theta <- theta0
+        P$kpar$s <- s0
+      }
+      else if((P$kpar$s<(s0/4)) && (theta%*%theta_old/norm_vec(theta)/norm_vec(theta_old))>(1-1e-4)) break
+      else P$kpar$s <- P$kpar$s*.5
+    }
+  }
+  list(cluster = clusters, v = vv, params = P)
+}
