@@ -2,4 +2,4 @@ import(rARPACK)
 import(pracma)
 import(FactoClass)
 
-export("SCPP_cluster", "SCPP_plot", "cluster_performance")
+export("SCPP_cluster", "SCPP_MMC", "SCPP_plot", "cluster_performance")
