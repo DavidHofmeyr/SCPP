@@ -914,8 +914,8 @@ SCPP_MMC <- function(X, v0 = NULL, ndim = NULL, nMicro = NULL, betamax = NULL, b
         theta <- theta0
         P$kpar$s <- s0
       }
-      else if((P$kpar$s<(s0/4)) && (theta%*%theta_old/norm_vec(theta)/norm_vec(theta_old))>(1-1e-4)) break
-      else P$kpar$s <- P$kpar$s*.5
+      else if((theta%*%theta_old/norm_vec(theta)/norm_vec(theta_old))>(1-1e-4)) break
+      else P$kpar$s <- P$kpar$s/3
     }
   }
   list(cluster = clusters, v = vv, params = P)
