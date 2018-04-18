@@ -907,7 +907,6 @@ SCPP_MMC <- function(X, v0 = NULL, ndim = NULL, nMicro = NULL, betamax = NULL, b
       clusters <- numeric(sum(P$x_size))
       for(j in 1:length(P$x_size)) clusters[which(km$cluster==j)] <- assgn[j]
 
-      plot(X%*%vv, col = clusters)
 
       #### if balance of clusters is not met decrease beta and try again
       if((min(sum(clusters==1), sum(clusters==2))<P$nmin) && (P$beta>P$betamin)){
