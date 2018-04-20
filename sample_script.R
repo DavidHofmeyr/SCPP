@@ -10,7 +10,7 @@ library(SCPP)
 
 ### Some of the datasets considered in the paper were too large to fit in the R package. These can be obtained from
 # smartphone, isolet: https://archive.ics.uci.edu/ml/datasets.html
-# yale faces B: https://cervisia.org/machine_learning_data.php/
+# Yale faces B: https://cervisia.org/machine_learning_data.php/
 # phoneme: https://web.stanford.edu/~hastie/ElemStatLearn/
 
 ### For the remaining datasets:
