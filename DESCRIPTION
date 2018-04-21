@@ -4,7 +4,7 @@ Title: Projection Pursuit for Spectral Clustering
 Version: 0.1.0
 Author: David Hofmeyr <dhofmeyr@sun.ac.za> [aut, cre]
 Maintainer: David Hofmeyr <dhofmeyr@sun.ac.za>
-Description: Performs projection pursuit based on spectral connectivity to find optimal subspaces for spectral clustering. Clustering is performed recursively by repeatedly identifying subspaces for separating (some) clusters from others.
+Description: Performs projection pursuit based on spectral connectivity to find optimal subspaces for spectral clustering. Clustering is performed recursively by repeatedly identifying subspaces for separating (some) clusters from others. All datasets included are from the UCI machine learning repository [https://archive.ics.uci.edu/ml/datasets.html](Bache and Lichman, 2013)
 Depends: R (>= 2.10.0)
 License: GPL-3
 Encoding: UTF-8
