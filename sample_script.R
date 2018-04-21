@@ -13,7 +13,7 @@ library(SCPP)
 # Yale faces B: https://cervisia.org/machine_learning_data.php/
 # phoneme: https://web.stanford.edu/~hastie/ElemStatLearn/
 
-### For the remaining datasets:
+### All datasets included are from the UCI machine learning repository [https://archive.ics.uci.edu/ml/datasets.html](Bache and Lichman, 2013):
 
 ## Optical recognition of handwritten digits dataset
 
