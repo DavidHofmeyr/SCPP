@@ -7,3 +7,5 @@ library(devtools)
 install_github("DavidHofmeyr/SCPP")
 
 library(SCPP)
+
+help(SCPP-package)
