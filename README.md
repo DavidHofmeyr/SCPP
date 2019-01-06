@@ -8,4 +8,4 @@ install_github("DavidHofmeyr/SCPP")
 
 library(SCPP)
 
-help(SCPP-package)
+help("SCPP-package")
