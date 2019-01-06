@@ -14,7 +14,7 @@ Performs projection pursuit based on spectral connectivity to find optimal subsp
 }
 \author{
 David Hofmeyr[aut, cre]
-Maintainer: \packageMaintainer{PPCI}
+Maintainer: \packageMaintainer{SCPP}
 }
 \references{
 Hofmeyr, D., Pavlidis, N., Eckley, I. (2018) Minimum spectral connectivity projection pursuit, \emph{Statistics and Computing}, to appear.
