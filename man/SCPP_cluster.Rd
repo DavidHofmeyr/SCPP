@@ -30,7 +30,9 @@ using spectral clustering within an optimal subspace.
   \item{$data}{the data matrix being clustered.}
   \item{$args}{named list of arguments passed to SCPP_cluster.}
 }
-
+\references{
+  Hofmeyr, D., Pavlidis, N., Eckley, I. (2018) Minimum spectral connectivity projection pursuit. \emph{Statistics and Computing}, to appear.
+}
 \examples{
 ## load synthetic control chart dataset
 data(chart)
